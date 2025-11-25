@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Open When Letters for Angie</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #e5edff;
+      color: #1f2933;
+    }
+
+    .page {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 20px 14px 60px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    header h1 {
+      font-size: clamp(1.9rem, 3vw, 2.4rem);
+      margin: 0 0 6px;
+      color: #102a43;
+    }
+
+    header p {
+      margin: 0;
+      font-size: 0.95rem;
+      color: #486581;
+    }
+
+    .tagline {
+      margin-top: 8px;
+      font-style: italic;
+      color: #243b53;
+      font-weight: 500;
+    }
+
+    .how-it-works {
+      max-width: 650px;
+      margin: 0 auto 20px;
+      background: #ffffff;
+      border-radius: 14px;
+      padding: 14px 18px;
+      border: 1px solid rgba(100, 116, 139, 0.25);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      color: #334e68;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+    }
+
+    .section-title {
+      margin: 26px 2px 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #102a43;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title span.icon {
+      font-size: 1.1rem;
+    }
+
+    .letters-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 10px;
+    }
+
+    .letter-card {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 16px 14px 14px;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, border-color 0.12s ease;
+      position: relative;
+    }
+
+    .letter-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.18);
+      border-color: #3b82f6;
+    }
+
+    .letter-card h3 {
+      margin-top: 0;
+      margin-bottom: 4px;
+      font-size: 0.98rem;
+      color: #102a43;
+    }
+
+    .card-subtitle {
+      font-size: 0.78rem;
+      color: #627d98;
+      margin-bottom: 8px;
+    }
+
+    .open-btn, .save-btn {
+      cursor: pointer;
+      border-radius: 999px;
+      padding: 7px 13px;
+      border: none;
+      font-size: 0.82rem;
+      font-weight: 500;
+    }
+
+    .open-btn {
+      background: #2563eb;
+      color: #f9fafb;
+      box-shadow: 0 6px 14px rgba(37, 99, 235, 0.45);
+    }
+
+    .save-btn {
+      margin-top: 8px;
+      background: transparent;
+      border: 1px solid #2563eb;
+      color: #1d4ed8;
+    }
+
+    .section-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      margin: 8px 0 4px;
+      color: #52606d;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 90px;
+      resize: vertical;
+      padding: 8px 9px;
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      font-family: inherit;
+      font-size: 0.88rem;
+      line-height: 1.45;
+      outline: none;
+      background: #f7fafc;
+      color: #102a43;
+    }
+
+    textarea::placeholder {
+      color: #9fb3c8;
+    }
+
+    textarea:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.35);
+      background: #ffffff;
+    }
+
+    .save-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-top: 6px;
+      font-size: 0.76rem;
+      color: #627d98;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 32px;
+      font-size: 0.78rem;
+      color: #627d98;
+    }
+
+    /* Password + room overlay */
+    .lock-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(226, 232, 240, 0.8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 40;
+    }
+
+    .lock-card {
+      background: #ffffff;
+      border-radius: 18px;
+      padding: 20px 18px 18px;
+      max-width: 380px;
+      width: 90%;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.22);
+      color: #102a43;
+    }
+
+    .lock-card h2 {
+      margin: 0 0 4px;
+      font-size: 1.2rem;
+    }
+
+    .lock-card p {
+      margin: 0 0 8px;
+      font-size: 0.86rem;
+      color: #52606d;
+    }
+
+    .lock-field-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      margin-top: 8px;
+      color: #52606d;
+    }
+
+    .lock-input {
+      width: 100%;
+      padding: 8px 9px;
+      border-radius: 9px;
+      border: 1px solid rgba(148, 163, 184, 0.9);
+      background: #f7fafc;
+      color: #102a43;
+      margin-top: 4px;
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    .lock-input:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.4);
+      background: #ffffff;
+    }
+
+    .lock-btn {
+      margin-top: 12px;
+      width: 100%;
+      border-radius: 999px;
+      border: none;
+      padding: 8px 0;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      background: #2563eb;
+      color: #f9fafb;
+      box-shadow: 0 7px 18px rgba(37, 99, 235, 0.45);
+    }
+
+    .lock-error {
+      margin-top: 6px;
+      font-size: 0.8rem;
+      color: #dc2626;
+      min-height: 1em;
+    }
+
+    @media (max-width: 600px) {
+      .page {
+        padding: 16px 10px 40px;
+      }
+      .letters-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+      }
+      .letter-card {
+        padding: 14px 12px 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- PASSWORD + ROOM LOCK -->
+  <div class="lock-overlay" id="lockOverlay">
+    <div class="lock-card">
+      <h2>Locked</h2>
+      <p>This space is just for us. Enter the password and our shared room code.</p>
+
+      <div class="lock-field-label">Password</div>
+      <input type="password" id="lockInput" class="lock-input" placeholder="Password" autocomplete="off" />
+
+      <div class="lock-field-label">Room code</div>
+      <input type="text" id="roomInput" class="lock-input" placeholder="e.g. ANGIE2025" autocomplete="off" />
+
+      <button class="lock-btn" id="lockButton" type="button">Unlock</button>
+      <div class="lock-error" id="lockError"></div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="page" id="mainContent" style="display:none;">
+    <header>
+      <h1>Letters for Angie</h1>
+      <p class="tagline">
+        Love never gives up, never loses faith, is always hopeful,<br/>
+        and endures through every circumstance — 1 Corinthians 13:7
+      </p>
+    </header>
+
+    <section class="how-it-works">
+      <strong>How it works (with sync & room code):</strong><br/>
+      • We both open the same website link.<br/>
+      • We enter the password <em>(smurfies)</em> and the same room code (for example: <em>ANGIE2025</em>).<br/>
+      • All letters and replies are stored under that room code, so only people who know it can see them.<br/>
+      • When either of us hits <em>“Save letter & reply”</em>, it syncs online (Firebase) so we both see the same content.
+    </section>
+
+    <div class="section-title">
+      <span class="icon">🙏</span>
+      <span>Prayer Letters</span>
+    </div>
+    <section class="letters-grid" id="prayerGrid"></section>
+
+    <div class="section-title">
+      <span class="icon">✉️</span>
+      <span>Open When Letters</span>
+    </div>
+    <section class="letters-grid" id="lettersGrid"></section>
+
+    <footer>
+      Made just for Angie. Synced through Firebase, protected by our password and room code.
+    </footer>
+  </div>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+  <script>
+    // Firebase config (your real project)
+    const firebaseConfig = {
+      apiKey: "AIzaSyA5Ka_qHdcE4duzWgIaO-QI0FGtynW0gsE",
+      authDomain: "angie-letters.firebaseapp.com",
+      databaseURL: "https://angie-letters-default-rtdb.firebaseio.com",
+      projectId: "angie-letters",
+      storageBucket: "angie-letters.firebasestorage.app",
+      messagingSenderId: "912395964498",
+      appId: "1:912395964498:web:8bff51ea7c30cbce430f8b"
+    };
+
+    let db = null;
+    try {
+      firebase.initializeApp(firebaseConfig);
+      db = firebase.database();
+    } catch (e) {
+      console.warn("Firebase not initialized. Check config if this keeps happening.", e);
+    }
+
+    const PASSWORD = "smurfies";
+    let ROOM_CODE = "";
+
+    const PRAYER_LETTERS = [
+      { id: "prayer-peace", title: "Prayer for your peace" },
+      { id: "prayer-strength", title: "Prayer for your strength" },
+      { id: "prayer-future", title: "Prayer for our future together" },
+      { id: "prayer-anxiety", title: "Prayer for when you feel anxious" },
+      { id: "prayer-gratitude", title: "Prayer of gratitude for you" }
+    ];
+
+    const LETTERS = [
+      { id: "when-you-miss-me", title: "Open when… you miss me" },
+      { id: "when-youre-sad", title: "Open when… you're sad" },
+      { id: "when-youre-happy", title: "Open when… you're happy" },
+      { id: "when-we-argue", title: "Open when… we've argued" },
+      { id: "when-you-cant-sleep", title: "Open when… you can't sleep" },
+      { id: "when-you-need-motivation", title: "Open when… you need motivation" },
+      { id: "special-day", title: "Open when… it's a special day" },
+      { id: "feel-alone", title: "Open when… you feel alone" },
+      { id: "stressed", title: "Open when… you're stressed" },
+      { id: "random", title: "Open when… you want a surprise" },
+
+      { id: "bad-day", title: "Open when… you've had a bad day" },
+      { id: "sick", title: "Open when… you're sick" },
+      { id: "big-win", title: "Open when… you've achieved something big" },
+      { id: "overthinking", title: "Open when… you're overthinking everything" },
+      { id: "insecure", title: "Open when… you feel insecure" },
+      { id: "anniversary", title: "Open when… it's our anniversary" },
+      { id: "birthday", title: "Open when… it's your birthday" },
+      { id: "new-place", title: "Open when… you're in a new place or city" },
+      { id: "need-reminder", title: "Open when… you need a reminder that I love you" },
+      { id: "nostalgic", title: "Open when… you want to reminisce about us" },
+
+      { id: "need-strength-god", title: "Open when… you need strength from God" },
+      { id: "feel-distant-faith", title: "Open when… you feel distant from your faith" },
+      { id: "pray-together", title: "Open when… you want to pray together" },
+      { id: "god-with-you", title: "Open when… you need a reminder that God is with you" },
+      { id: "feel-blessed", title: "Open when… you feel blessed" }
+    ];
+
+    const STORAGE_KEY_PREFIX = "openWhenLetter_";
+    const REPLY_SUFFIX = "_reply";
+
+    function getLocalKey(id) {
+      // Include room code in local key so different rooms don't overwrite each other
+      const roomPart = ROOM_CODE ? ROOM_CODE + "_" : "";
+      return STORAGE_KEY_PREFIX + roomPart + id;
+    }
+    function getLocalReplyKey(id) {
+      const roomPart = ROOM_CODE ? ROOM_CODE + "_" : "";
+      return STORAGE_KEY_PREFIX + roomPart + id + REPLY_SUFFIX;
+    }
+
+    function getSavedLocal(id){
+      try { return localStorage.getItem(getLocalKey(id)) || ""; }
+      catch(e){ return ""; }
+    }
+    function getSavedReplyLocal(id){
+      try { return localStorage.getItem(getLocalReplyKey(id)) || ""; }
+      catch(e){ return ""; }
+    }
+    function saveLocal(id, text, reply){
+      try {
+        localStorage.setItem(getLocalKey(id), text);
+        localStorage.setItem(getLocalReplyKey(id), reply);
+      } catch(e){}
+    }
+
+    function getLetterRef(id) {
+      if (!db || !ROOM_CODE) return null;
+      return db.ref("rooms/" + ROOM_CODE + "/letters/" + id);
+    }
+
+    function saveToFirebase(id, text, reply){
+      const ref = getLetterRef(id);
+      if (!ref) return;
+      ref.set({
+        myText: text,
+        herText: reply
+      }).catch(err => console.error("Firebase save error", err));
+    }
+
+    function listenToFirebase(id, myTextEl, herTextEl, statusEl){
+      const ref = getLetterRef(id);
+      if (!ref) return;
+      ref.on("value", snap => {
+        const val = snap.val();
+        if (!val) return;
+        if (typeof val.myText === "string" && myTextEl.value !== val.myText) {
+          myTextEl.value = val.myText;
+        }
+        if (typeof val.herText === "string" && herTextEl.value !== val.herText) {
+          herTextEl.value = val.herText;
+        }
+        if (statusEl) statusEl.textContent = "Synced with cloud (room " + ROOM_CODE + ").";
+      });
+    }
+
+    function createCard(letter, isPrayer = false){
+      const div = document.createElement("div");
+      div.className = "letter-card";
+      div.innerHTML = `
+        <h3>${letter.title}</h3>
+        <p class="card-subtitle">${isPrayer ? "A prayer I wrote for you and the way you experienced it." : "A letter from me and a space for you to answer."}</p>
+        <button class="open-btn" type="button">Open</button>
+        <div class="letter-body" style="display:none;margin-top:10px;">
+          <div class="section-label">${isPrayer ? "My prayer for you" : "My letter to you"}</div>
+          <textarea class="mine" placeholder="${isPrayer ? "Write your prayer here…" : "Write your letter here…"}"></textarea>
+          <div class="section-label">${isPrayer ? "Your response" : "Your reply to me"}</div>
+          <textarea class="hers" placeholder="${isPrayer ? "You can write how you feel or your own prayer here." : "You can reply here when you open this."}"></textarea>
+          <div class="save-row">
+            <span class="status">Not saved yet.</span>
+            <button class="save-btn" type="button">Save letter & reply</button>
+          </div>
+        </div>
+      `;
+
+      const btn = div.querySelector(".open-btn");
+      const body = div.querySelector(".letter-body");
+      const myText = div.querySelector("textarea.mine");
+      const herText = div.querySelector("textarea.hers");
+      const saveBtn = div.querySelector(".save-btn");
+      const status = div.querySelector(".status");
+
+      // Load local cache for this room (ROOM_CODE is already set at this point)
+      myText.value = getSavedLocal(letter.id);
+      herText.value = getSavedReplyLocal(letter.id);
+
+      // Attach firebase listener for this letter in this room
+      listenToFirebase(letter.id, myText, herText, status);
+
+      btn.onclick = () => {
+        body.style.display = body.style.display === "none" ? "block" : "none";
+      };
+
+      saveBtn.onclick = () => {
+        const text = myText.value;
+        const reply = herText.value;
+        saveLocal(letter.id, text, reply);
+        saveToFirebase(letter.id, text, reply);
+        status.textContent = "Saved locally & to cloud (room " + ROOM_CODE + ").";
+        saveBtn.textContent = "Saved!";
+        setTimeout(() => {
+          saveBtn.textContent = "Save letter & reply";
+        }, 1200);
+      };
+
+      return div;
+    }
+
+    function buildCards() {
+      const prayerGrid = document.getElementById("prayerGrid");
+      const lettersGrid = document.getElementById("lettersGrid");
+      prayerGrid.innerHTML = "";
+      lettersGrid.innerHTML = "";
+
+      PRAYER_LETTERS.forEach(l => prayerGrid.appendChild(createCard(l, true)));
+      LETTERS.forEach(l => lettersGrid.appendChild(createCard(l, false)));
+    }
+
+    function initLock() {
+      const overlay = document.getElementById("lockOverlay");
+      const main = document.getElementById("mainContent");
+      const input = document.getElementById("lockInput");
+      const roomInput = document.getElementById("roomInput");
+      const button = document.getElementById("lockButton");
+      const error = document.getElementById("lockError");
+
+      function tryUnlock() {
+        const passVal = input.value.trim();
+        const roomVal = roomInput.value.trim();
+
+        if (passVal !== PASSWORD) {
+          error.textContent = "Wrong password.";
+          return;
+        }
+        if (!roomVal) {
+          error.textContent = "Please enter a room code.";
+          return;
+        }
+
+        ROOM_CODE = roomVal;
+        error.textContent = "";
+        overlay.style.display = "none";
+        main.style.display = "block";
+
+        // Once room code is set, build cards (so they use the right room)
+        buildCards();
+      }
+
+      button.addEventListener("click", tryUnlock);
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          tryUnlock();
+        }
+      });
+      roomInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          tryUnlock();
+        }
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      initLock();
+      // cards are built after successful unlock with room code
+    });
+  </script>
+</body>
+</html>
