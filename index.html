@@ -71,6 +71,13 @@
       font-size: 1.1rem;
     }
 
+    .status-banner {
+      max-width: 650px;
+      margin: 0 auto 12px;
+      font-size: 0.8rem;
+      color: #0f766e;
+    }
+
     .letters-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -299,6 +306,10 @@
       </p>
     </header>
 
+    <div class="status-banner" id="firebaseStatus">
+      Checking connection…
+    </div>
+
     <section class="how-it-works">
       <strong>How it works (with sync & room code):</strong><br/>
       • We both open the same website link.<br/>
@@ -329,6 +340,8 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
   <script>
+    const statusEl = document.getElementById("firebaseStatus");
+
     // Firebase config (your real project)
     const firebaseConfig = {
       apiKey: "AIzaSyA5Ka_qHdcE4duzWgIaO-QI0FGtynW0gsE",
@@ -344,8 +357,10 @@
     try {
       firebase.initializeApp(firebaseConfig);
       db = firebase.database();
+      if (statusEl) statusEl.textContent = "Connected to Firebase. Use the same room code on both devices.";
     } catch (e) {
       console.warn("Firebase not initialized. Check config if this keeps happening.", e);
+      if (statusEl) statusEl.textContent = "Could not connect to Firebase. Letters will NOT sync between devices.";
     }
 
     const PASSWORD = "smurfies";
@@ -393,7 +408,6 @@
     const REPLY_SUFFIX = "_reply";
 
     function getLocalKey(id) {
-      // Include room code in local key so different rooms don't overwrite each other
       const roomPart = ROOM_CODE ? ROOM_CODE + "_" : "";
       return STORAGE_KEY_PREFIX + roomPart + id;
     }
@@ -473,11 +487,9 @@
       const saveBtn = div.querySelector(".save-btn");
       const status = div.querySelector(".status");
 
-      // Load local cache for this room (ROOM_CODE is already set at this point)
       myText.value = getSavedLocal(letter.id);
       herText.value = getSavedReplyLocal(letter.id);
 
-      // Attach firebase listener for this letter in this room
       listenToFirebase(letter.id, myText, herText, status);
 
       btn.onclick = () => {
@@ -535,7 +547,8 @@
         overlay.style.display = "none";
         main.style.display = "block";
 
-        // Once room code is set, build cards (so they use the right room)
+        if (statusEl) statusEl.textContent = "Connected. Room code: " + ROOM_CODE + ". Use this same code on both devices.";
+
         buildCards();
       }
 
@@ -554,7 +567,6 @@
 
     document.addEventListener("DOMContentLoaded", () => {
       initLock();
-      // cards are built after successful unlock with room code
     });
   </script>
 </body>
